@@ -79,6 +79,7 @@ RCT_EXPORT_METHOD(connectPrinter:(NSString *)inner_mac_address
 
 RCT_EXPORT_METHOD(printRawData:(NSString *)text
                   printerOptions:(NSDictionary *)options
+                  success:(RCTResponseSenderBlock)successCallback
                   fail:(RCTResponseSenderBlock)errorCallback) {
     @try {
         !m_printer ? [NSException raise:@"Invalid connection" format:@"printRawData: Can't connect to printer"] : nil;
@@ -102,6 +103,8 @@ RCT_EXPORT_METHOD(printRawData:(NSString *)text
         beep ? [[PrinterSDK defaultPrinterSDK] beep] : nil;
         cut ? [[PrinterSDK defaultPrinterSDK] cutPaper] : nil;
 
+        successCallback(@[@true]);
+
     } @catch (NSException *exception) {
         errorCallback(@[exception.reason]);
     }
@@ -109,6 +112,7 @@ RCT_EXPORT_METHOD(printRawData:(NSString *)text
 
 RCT_EXPORT_METHOD(printImageData:(NSString *)imgUrl
                   printerOptions:(NSDictionary *)options
+                  success:(RCTResponseSenderBlock)successCallback
                   fail:(RCTResponseSenderBlock)errorCallback) {
     @try {
 
@@ -117,6 +121,12 @@ RCT_EXPORT_METHOD(printImageData:(NSString *)imgUrl
         NSData* imageData = [NSData dataWithContentsOfURL:url];
 
         NSString* printerWidthType = [options valueForKey:@"printerWidthType"];
+
+        NSNumber* beepPtr = [options valueForKey:@"beep"];
+        NSNumber* cutPtr = [options valueForKey:@"cut"];
+
+        BOOL beep = (BOOL)[beepPtr intValue];
+        BOOL cut = (BOOL)[cutPtr intValue];
 
         NSInteger printerWidth = 576;
 
@@ -130,8 +140,10 @@ RCT_EXPORT_METHOD(printImageData:(NSString *)imgUrl
 
             [[PrinterSDK defaultPrinterSDK] setPrintWidth:printerWidth];
             [[PrinterSDK defaultPrinterSDK] printImage:printImage ];
+            beep ? [[PrinterSDK defaultPrinterSDK] beep] : nil;
+            cut ? [[PrinterSDK defaultPrinterSDK] cutPaper] : nil;
         }
-
+        successCallback(@[@true]);
     } @catch (NSException *exception) {
         errorCallback(@[exception.reason]);
     }
@@ -139,6 +151,7 @@ RCT_EXPORT_METHOD(printImageData:(NSString *)imgUrl
 
 RCT_EXPORT_METHOD(printImageBase64:(NSString *)base64Qr
                   printerOptions:(NSDictionary *)options
+                  success:(RCTResponseSenderBlock)successCallback
                   fail:(RCTResponseSenderBlock)errorCallback) {
     @try {
 
@@ -148,6 +161,12 @@ RCT_EXPORT_METHOD(printImageBase64:(NSString *)base64Qr
             NSURL *url = [NSURL URLWithString:result];
             NSData *imageData = [NSData dataWithContentsOfURL:url];
             NSString* printerWidthType = [options valueForKey:@"printerWidthType"];
+            
+            NSNumber* beepPtr = [options valueForKey:@"beep"];
+            NSNumber* cutPtr = [options valueForKey:@"cut"];
+
+            BOOL beep = (BOOL)[beepPtr intValue];
+            BOOL cut = (BOOL)[cutPtr intValue];
 
             NSInteger printerWidth = 576;
 
@@ -161,8 +180,11 @@ RCT_EXPORT_METHOD(printImageBase64:(NSString *)base64Qr
 
                 [[PrinterSDK defaultPrinterSDK] setPrintWidth:printerWidth];
                 [[PrinterSDK defaultPrinterSDK] printImage:printImage ];
+                beep ? [[PrinterSDK defaultPrinterSDK] beep] : nil;
+                cut ? [[PrinterSDK defaultPrinterSDK] cutPaper] : nil;
             }
         }
+        successCallback(@[@true]);
     } @catch (NSException *exception) {
         errorCallback(@[exception.reason]);
     }
@@ -239,6 +261,13 @@ RCT_EXPORT_METHOD(closeConn) {
     } @catch (NSException *exception) {
         NSLog(@"%@", exception.reason);
     }
+}
+
+RCT_EXPORT_METHOD(printTestPaper) {
+    [[PrinterSDK defaultPrinterSDK] printTestPaper];
+}
+RCT_EXPORT_METHOD(selfTest) {
+    [[PrinterSDK defaultPrinterSDK] selfTest];
 }
 
 @end
