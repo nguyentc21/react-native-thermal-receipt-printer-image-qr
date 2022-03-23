@@ -68,6 +68,8 @@ declare const USBPrinter: {
      * 58mm => 30 character
      */
     printColumnsText: (texts: string[], columnWidth: number[], columnAliment: (ColumnAliment)[], columnStyle: string[], opts?: PrinterOptions) => void;
+    printTestPaper: () => void;
+    selfTest: () => void;
 };
 declare const BLEPrinter: {
     init: () => Promise<void>;
@@ -99,6 +101,8 @@ declare const BLEPrinter: {
      * 58mm => 30 character
      */
     printColumnsText: (texts: string[], columnWidth: number[], columnAliment: (ColumnAliment)[], columnStyle: string[], opts?: PrinterOptions) => void;
+    printTestPaper: () => void;
+    selfTest: () => void;
 };
 declare const NetPrinter: {
     init: () => Promise<void>;
@@ -130,6 +134,8 @@ declare const NetPrinter: {
      * 58mm => 30 character
      */
     printColumnsText: (texts: string[], columnWidth: number[], columnAliment: (ColumnAliment)[], columnStyle?: string[], opts?: PrinterOptions) => void;
+    printTestPaper: () => void;
+    selfTest: () => void;
 };
 declare const NetPrinterEventEmitter: NativeEventEmitter;
 export { COMMANDS, NetPrinter, BLEPrinter, USBPrinter, NetPrinterEventEmitter };
