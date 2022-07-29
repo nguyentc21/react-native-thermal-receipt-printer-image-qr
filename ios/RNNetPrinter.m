@@ -82,11 +82,12 @@ RCT_EXPORT_METHOD(getDeviceList:(RCTResponseSenderBlock)successCallback
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePrinterConnectedNotification:) name:PrinterConnectedNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleBLEPrinterConnectedNotification:) name:@"BLEPrinterConnected" object:nil];
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [self scan:successCallback];
+        [self scan:successCallback fail:errorCallback];
     });
 }
 
-- (void) scan: (RCTResponseSenderBlock)successCallback {
+- (void) scan: (RCTResponseSenderBlock)successCallback
+          fail:(RCTResponseSenderBlock)errorCallback {
     @try {
         PrivateIP *privateIP = [[PrivateIP alloc]init];
         NSString *localIP = [privateIP getIPAddress];
@@ -114,6 +115,7 @@ RCT_EXPORT_METHOD(getDeviceList:(RCTResponseSenderBlock)successCallback
         successCallback(@[_printerArray]);
     } @catch (NSException *exception) {
         NSLog(@"No connection");
+        errorCallback(@[exception.reason]);
     }
     [[PrinterSDK defaultPrinterSDK] disconnect];
     is_scanning = NO;

@@ -404,7 +404,7 @@ var BLEPrinter = {
 var NetPrinter = {
     init: function () {
         return new Promise(function (resolve, reject) {
-            return RNNetPrinter.init(function () { return resolve(); }, function (error) { return reject(error); });
+            return RNNetPrinter.init(function (rs) { return resolve(rs); }, function (error) { return reject(error); });
         });
     },
     getDeviceList: function () {
