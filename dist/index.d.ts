@@ -17,7 +17,8 @@ export interface PrinterImageOptions {
     encoding?: string;
     imageWidth?: number;
     imageHeight?: number;
-    printerWidthType?: PrinterWidth;
+    // printerWidthType?: PrinterWidth;
+    printerWidth?: number;
     paddingX?: number;
 }
 export interface IUSBPrinter {

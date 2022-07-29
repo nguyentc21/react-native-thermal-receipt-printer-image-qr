@@ -434,9 +434,15 @@ var NetPrinter = {
         }); });
     },
     closeConn: function () {
-        return new Promise(function (resolve) {
-            RNNetPrinter.closeConn();
-            resolve();
+        return new Promise(function (resolve, reject) {
+            return RNNetPrinter.closeConn(
+                function(result) {
+                    return resolve(result);
+                },
+                function(error) {
+                    return reject(error);
+                }
+            );
         });
     },
     printText: function (text, opts) {
@@ -559,18 +565,28 @@ var NetPrinter = {
      * 58mm => 30 character
      */
     printColumnsText: function (texts, columnWidth, columnAliment, columnStyle, opts) {
-        if (columnStyle === void 0) { columnStyle = []; }
-        if (opts === void 0) { opts = {}; }
-        var result = processColumnText(texts, columnWidth, columnAliment, columnStyle);
-        if (Platform.OS === "ios") {
-            var processedText = textPreprocessingIOS(result, false, false);
-            RNNetPrinter.printRawData(processedText.text, processedText.opts, function (error) { return console.warn(error); });
-        }
-        else {
-            RNNetPrinter.printRawData(textTo64Buffer(result, opts), function (error) {
-                return console.warn(error);
-            });
-        }
+        return new Promise(function (resolve, reject) {
+            if (columnStyle === void 0) { columnStyle = []; }
+            if (opts === void 0) { opts = {}; }
+            var result = processColumnText(texts, columnWidth, columnAliment, columnStyle);
+            if (Platform.OS === "ios") {
+                var processedText = textPreprocessingIOS(result, false, false);
+                RNNetPrinter.printRawData(
+                    processedText.text,
+                    processedText.opts,
+                    function (result) {
+                        return resolve(result);
+                    },
+                    function (error) {
+                        return reject(error);
+                    });
+            }
+            else {
+                RNNetPrinter.printRawData(textTo64Buffer(result, opts), function (error) {
+                    return console.warn(error);
+                });
+            }
+        });
     },
     printTestPaper: function() {
         RNNetPrinter.printTestPaper();
