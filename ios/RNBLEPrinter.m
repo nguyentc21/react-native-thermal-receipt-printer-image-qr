@@ -19,6 +19,7 @@ RCT_EXPORT_METHOD(init:(RCTResponseSenderBlock)successCallback
         m_printer = [[NSObject alloc] init];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleNetPrinterConnectedNotification:) name:@"NetPrinterConnected" object:nil];
         // API MISUSE: <CBCentralManager> can only accept this command while in the powered on state
+        // [[PrinterSDK defaultPrinterSDK] scanPrintersWithCompletion:^(Printer* printer){}];
         successCallback(@[@"Init successful"]);
     } @catch (NSException *exception) {
         errorCallback(@[@"No bluetooth adapter available"]);
@@ -41,7 +42,7 @@ RCT_EXPORT_METHOD(getDeviceList:(RCTResponseSenderBlock)successCallback
                 NSDictionary *dict = @{ @"device_name" : printer.name, @"inner_mac_address" : printer.UUIDString};
                 [mapped addObject:dict];
             }];
-            NSMutableArray *uniquearray = (NSMutableArray *)[[NSSet setWithArray:mapped] allObjects];
+            NSMutableArray*uniquearray = (NSMutableArray *)[[NSSet setWithArray:mapped] allObjects];
             [[PrinterSDK defaultPrinterSDK] stopScanPrinters];
             successCallback(@[uniquearray]);
         }];
@@ -253,13 +254,19 @@ RCT_EXPORT_METHOD(printImageBase64:(NSString *)base64Qr
     return paddedImage;
 }
 
-RCT_EXPORT_METHOD(closeConn) {
+RCT_EXPORT_METHOD(closeConn:(RCTResponseSenderBlock)successCallback
+                  fail:(RCTResponseSenderBlock)errorCallback) {
     @try {
-        !m_printer ? [NSException raise:@"Invalid connection" format:@"closeConn: Can't connect to printer"] : nil;
-        [[PrinterSDK defaultPrinterSDK] disconnect];
-        m_printer = nil;
+        if (!m_printer) {
+            successCallback(@[@false]);
+        } else {
+            [[PrinterSDK defaultPrinterSDK] disconnect];
+            m_printer = nil;
+            successCallback(@[@true]);
+        }
     } @catch (NSException *exception) {
         NSLog(@"%@", exception.reason);
+        errorCallback(@[exception.reason]);
     }
 }
 
@@ -271,4 +278,3 @@ RCT_EXPORT_METHOD(selfTest) {
 }
 
 @end
-

@@ -257,9 +257,15 @@ var BLEPrinter = {
         });
     },
     closeConn: function () {
-        return new Promise(function (resolve) {
-            RNBLEPrinter.closeConn();
-            resolve();
+        return new Promise(function (resolve, reject) {
+            return RNBLEPrinter.closeConn(
+                function(result) {
+                    return resolve(result);
+                },
+                function(error) {
+                    return reject(error);
+                }
+            );
         });
     },
     printText: function (text, opts) {
