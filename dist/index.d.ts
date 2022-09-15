@@ -90,7 +90,7 @@ declare const BLEPrinter: {
      * @param Base64
      * @param opts
      */
-    printImageBase64: (Base64: string, opts?: PrinterImageOptions) => void;
+    printImageBase64: (Base64: string, opts?: PrinterImageOptions) => Promise<void>;
     /**
      * android print with encoder
      * @param text
