@@ -50,6 +50,9 @@ RCT_EXPORT_METHOD(getDeviceList:(RCTResponseSenderBlock)successCallback
         errorCallback(@[exception.reason]);
     }
 }
+RCT_EXPORT_METHOD(stopScan) {
+    [[PrinterSDK defaultPrinterSDK] stopScanPrinters];
+}
 
 RCT_EXPORT_METHOD(connectPrinter:(NSString *)inner_mac_address
                   success:(RCTResponseSenderBlock)successCallback
