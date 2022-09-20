@@ -257,13 +257,9 @@ RCT_EXPORT_METHOD(printImageBase64:(NSString *)base64Qr
 RCT_EXPORT_METHOD(closeConn:(RCTResponseSenderBlock)successCallback
                   fail:(RCTResponseSenderBlock)errorCallback) {
     @try {
-        if (!m_printer) {
-            successCallback(@[@false]);
-        } else {
-            [[PrinterSDK defaultPrinterSDK] disconnect];
-            m_printer = nil;
-            successCallback(@[@true]);
-        }
+        m_printer = nil;
+        [[PrinterSDK defaultPrinterSDK] disconnect];
+        successCallback(@[@true]);
     } @catch (NSException *exception) {
         NSLog(@"%@", exception.reason);
         errorCallback(@[exception.reason]);
@@ -278,3 +274,4 @@ RCT_EXPORT_METHOD(selfTest) {
 }
 
 @end
+
