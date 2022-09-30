@@ -164,25 +164,20 @@ RCT_EXPORT_METHOD(printImageBase64:(NSString *)base64Qr
             NSString *result = [@"data:image/png;base64," stringByAppendingString:base64Qr];
             NSURL *url = [NSURL URLWithString:result];
             NSData *imageData = [NSData dataWithContentsOfURL:url];
-            NSString* printerWidthType = [options valueForKey:@"printerWidthType"];
+            NSString* printerWidth = [options valueForKey:@"printerWidth"];
             
+            int printerWitdthInt = [printerWidth intValue];
             NSNumber* beepPtr = [options valueForKey:@"beep"];
             NSNumber* cutPtr = [options valueForKey:@"cut"];
 
             BOOL beep = (BOOL)[beepPtr intValue];
             BOOL cut = (BOOL)[cutPtr intValue];
 
-            NSInteger printerWidth = 576;
-
-            if(printerWidthType != nil && [printerWidthType isEqualToString:@"58"]) {
-                printerWidth = 384;
-            }
-
             if(imageData != nil){
                 UIImage* image = [UIImage imageWithData:imageData];
                 UIImage* printImage = [self getPrintImage:image printerOptions:options];
 
-                [[PrinterSDK defaultPrinterSDK] setPrintWidth:printerWidth];
+                [[PrinterSDK defaultPrinterSDK] setPrintWidth:printerWitdthInt];
                 [[PrinterSDK defaultPrinterSDK] printImage:printImage ];
                 beep ? [[PrinterSDK defaultPrinterSDK] beep] : nil;
                 cut ? [[PrinterSDK defaultPrinterSDK] cutPaper] : nil;
