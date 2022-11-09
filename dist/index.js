@@ -127,9 +127,15 @@ var USBPrinter = {
         });
     },
     closeConn: function () {
-        return new Promise(function (resolve) {
-            RNUSBPrinter.closeConn();
-            resolve();
+        return new Promise(function (resolve, reject) {
+            return RNUSBPrinter.closeConn(
+                function(result) {
+                    return resolve(result);
+                },
+                function(error) {
+                    return reject(error);
+                }
+            );
         });
     },
     printText: function (text, opts) {
@@ -202,6 +208,7 @@ var USBPrinter = {
                 return RNUSBPrinter.printImageBase64(
                     Base64,
                     (_a = opts === null || opts === void 0 ? void 0 : opts.imageWidth) !== null && _a !== void 0 ? _a : 0, (_b = opts === null || opts === void 0 ? void 0 : opts.imageHeight) !== null && _b !== void 0 ? _b : 0,
+                    !!opts.cut,
                     function (success) { return resolve(success); },
                     function (error) { return reject(error); }
                 );
@@ -366,6 +373,7 @@ var BLEPrinter = {
                 return RNBLEPrinter.printImageBase64(
                     Base64,
                     (_a = opts === null || opts === void 0 ? void 0 : opts.imageWidth) !== null && _a !== void 0 ? _a : 0, (_b = opts === null || opts === void 0 ? void 0 : opts.imageHeight) !== null && _b !== void 0 ? _b : 0,
+                    !!opts.cut,
                     function (success) { return resolve(success); },
                     function (error) { return reject(error); }
                 );
@@ -549,6 +557,7 @@ var NetPrinter = {
                 return RNNetPrinter.printImageBase64(
                     Base64,
                     (_a = opts === null || opts === void 0 ? void 0 : opts.imageWidth) !== null && _a !== void 0 ? _a : 0, (_b = opts === null || opts === void 0 ? void 0 : opts.imageHeight) !== null && _b !== void 0 ? _b : 0,
+                    !!opts.cut,
                     function (success) { return resolve(success); },
                     function (error) { return reject(error); }
                 );

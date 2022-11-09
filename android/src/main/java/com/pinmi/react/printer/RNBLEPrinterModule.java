@@ -44,8 +44,8 @@ public class RNBLEPrinterModule extends ReactContextBaseJavaModule implements RN
 
     @ReactMethod
     @Override
-    public void closeConn() {
-        adapter.closeConnectionIfExists();
+    public void closeConn(Callback successCallback, Callback errorCallback) {
+        adapter.closeConnectionIfExists(successCallback, errorCallback);
     }
 
     @ReactMethod
@@ -66,8 +66,8 @@ public class RNBLEPrinterModule extends ReactContextBaseJavaModule implements RN
 
     @ReactMethod
     @Override
-    public void printRawData(String base64Data, Callback errorCallback) {
-        adapter.printRawData(base64Data, errorCallback);
+    public void printRawData(String base64Data, Callback successCallback, Callback errorCallback) {
+        adapter.printRawData(base64Data, successCallback, errorCallback);
     }
 
     @ReactMethod
@@ -79,10 +79,10 @@ public class RNBLEPrinterModule extends ReactContextBaseJavaModule implements RN
 
     @ReactMethod
     @Override
-    public void printImageBase64(String base64, int imageWidth, int imageHeight, Callback errorCallback) {
+    public void printImageBase64(String base64, int imageWidth, int imageHeight, boolean cut, Callback successCallback, Callback errorCallback) {
         byte[] decodedString = Base64.decode(base64, Base64.DEFAULT);
         Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-        adapter.printImageBase64(decodedByte, imageWidth, imageHeight,errorCallback);
+        adapter.printImageBase64(decodedByte, imageWidth, imageHeight, cut, successCallback, errorCallback);
     }
 
     @ReactMethod

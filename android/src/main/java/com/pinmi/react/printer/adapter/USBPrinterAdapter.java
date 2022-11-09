@@ -60,6 +60,7 @@ public class USBPrinterAdapter implements PrinterAdapter {
     private final static byte[] SET_LINE_SPACE_32 = new byte[]{ESC_CHAR, 0x33, 32};
     private final static byte[] LINE_FEED = new byte[]{0x0A};
     private static final byte[] CENTER_ALIGN = {0x1B, 0X61, 0X31};
+    private static final byte[] CMD_CUT = {0x1D, 0x56, 0};
 
     private USBPrinterAdapter() {
     }
@@ -125,6 +126,21 @@ public class USBPrinterAdapter implements PrinterAdapter {
             mUsbInterface = null;
             mEndPoint = null;
             mUsbDeviceConnection = null;
+        }
+    }
+    public void closeConnectionIfExists(Callback successCallback, Callback errorCallback) {
+        boolean isError = false;
+        if (mUsbDeviceConnection != null) {
+            mUsbDeviceConnection.releaseInterface(mUsbInterface);
+            mUsbDeviceConnection.close();
+            mUsbInterface = null;
+            mEndPoint = null;
+            mUsbDeviceConnection = null;
+        }
+        if (!isError) {
+            successCallback.invoke();
+        } else {
+            errorCallback.invoke();
         }
     }
 
@@ -222,7 +238,7 @@ public class USBPrinterAdapter implements PrinterAdapter {
     }
 
 
-    public void printRawData(String data, Callback errorCallback) {
+    public void printRawData(String data, Callback successCallback, Callback errorCallback) {
         final String rawData = data;
         Log.v(LOG_TAG, "start to print raw data " + data);
         boolean isConnected = openConnection();
@@ -241,6 +257,7 @@ public class USBPrinterAdapter implements PrinterAdapter {
             Log.v(LOG_TAG, msg);
             errorCallback.invoke(msg);
         }
+        successCallback.invoke("");
     }
 
     public static Bitmap getBitmapFromURL(String src) {
@@ -314,7 +331,7 @@ public class USBPrinterAdapter implements PrinterAdapter {
     }
 
     @Override
-    public void printImageBase64(final Bitmap bitmapImage, int imageWidth, int imageHeight, Callback errorCallback) {
+    public void printImageBase64(final Bitmap bitmapImage, int imageWidth, int imageHeight, boolean cut, Callback successCallback, Callback errorCallback) {
         if (bitmapImage == null) {
             errorCallback.invoke("image not found");
             return;
@@ -353,6 +370,17 @@ public class USBPrinterAdapter implements PrinterAdapter {
 
             mUsbDeviceConnection.bulkTransfer(mEndPoint, SET_LINE_SPACE_32, SET_LINE_SPACE_32.length, 100000);
             mUsbDeviceConnection.bulkTransfer(mEndPoint, LINE_FEED, LINE_FEED.length, 100000);
+            if (cut == true) {
+                mUsbDeviceConnection.bulkTransfer(mEndPoint, LINE_FEED, LINE_FEED.length, 100000);
+                mUsbDeviceConnection.bulkTransfer(mEndPoint, LINE_FEED, LINE_FEED.length, 100000);
+                mUsbDeviceConnection.bulkTransfer(mEndPoint, LINE_FEED, LINE_FEED.length, 100000);
+                mUsbDeviceConnection.bulkTransfer(mEndPoint, LINE_FEED, LINE_FEED.length, 100000);
+                mUsbDeviceConnection.bulkTransfer(mEndPoint, LINE_FEED, LINE_FEED.length, 100000);
+                mUsbDeviceConnection.bulkTransfer(mEndPoint, LINE_FEED, LINE_FEED.length, 100000);
+                mUsbDeviceConnection.bulkTransfer(mEndPoint, LINE_FEED, LINE_FEED.length, 100000);
+                mUsbDeviceConnection.bulkTransfer(mEndPoint, CMD_CUT, CMD_CUT.length, 100000);
+            }
+            successCallback.invoke("Successful!");
         } else {
             String msg = "failed to connected to device";
             Log.v(LOG_TAG, msg);

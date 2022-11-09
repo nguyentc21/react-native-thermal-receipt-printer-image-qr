@@ -45,7 +45,7 @@ declare const USBPrinter: {
     connectPrinter: (vendorId: string, productId: string) => Promise<IUSBPrinter>;
     closeConn: () => Promise<void>;
     printText: (text: string, opts?: PrinterOptions) => void;
-    printBill: (text: string, opts?: PrinterOptions) => void;
+    printBill: (text: string, opts?: PrinterOptions) => Promise<void>;
     /**
      * image url
      * @param imgUrl
@@ -79,7 +79,7 @@ declare const BLEPrinter: {
     connectPrinter: (inner_mac_address: string) => Promise<IBLEPrinter>;
     closeConn: () => Promise<void>;
     printText: (text: string, opts?: PrinterOptions) => void;
-    printBill: (text: string, opts?: PrinterOptions) => void;
+    printBill: (text: string, opts?: PrinterOptions) => Promise<void>;
     /**
      * image url
      * @param imgUrl
@@ -112,7 +112,7 @@ declare const NetPrinter: {
     connectPrinter: (host: string, port: number, timeout?: number | undefined) => Promise<INetPrinter>;
     closeConn: () => Promise<void>;
     printText: (text: string, opts?: {}) => void;
-    printBill: (text: string, opts?: PrinterOptions) => void;
+    printBill: (text: string, opts?: PrinterOptions) => Promise<void>;
     /**
      * image url
      * @param imgUrl

@@ -52,6 +52,7 @@ public class NetPrinterAdapter implements PrinterAdapter {
     private final static byte[] SET_LINE_SPACE_32 = new byte[]{ESC_CHAR, 0x33, 32};
     private final static byte[] LINE_FEED = new byte[]{0x0A};
     private static final byte[] CENTER_ALIGN = {0x1B, 0X61, 0X31};
+    private static final byte[] CMD_CUT = {0x1D, 0x56, 0};
 
     private Socket mSocket;
 
@@ -210,9 +211,31 @@ public class NetPrinterAdapter implements PrinterAdapter {
 
         }
     }
+    @Override
+    public void closeConnectionIfExists(Callback successCallback, Callback errorCallback) {
+        boolean isError = false;
+        if (this.mSocket != null) {
+            if (!this.mSocket.isClosed()) {
+                try {
+                    this.mSocket.close();
+                } catch (IOException e) {
+                    isError = true;
+                    e.printStackTrace();
+                }
+            }
+
+            this.mSocket = null;
+
+        }
+        if (!isError) {
+            successCallback.invoke();
+        } else {
+            errorCallback.invoke();
+        }
+    }
 
     @Override
-    public void printRawData(String rawBase64Data, Callback errorCallback) {
+    public void printRawData(String rawBase64Data, Callback successCallback, Callback errorCallback) {
         if (this.mSocket == null) {
             errorCallback.invoke("Net connection is not built, may be you forgot to connectPrinter");
             return;
@@ -234,7 +257,7 @@ public class NetPrinterAdapter implements PrinterAdapter {
                 }
             }
         }).start();
-
+        successCallback.invoke("");
     }
 
     public static Bitmap getBitmapFromURL(String src) {
@@ -306,7 +329,7 @@ public class NetPrinterAdapter implements PrinterAdapter {
     }
 
     @Override
-    public void printImageBase64(final Bitmap bitmapImage, int imageWidth, int imageHeight, Callback errorCallback) {
+    public void printImageBase64(final Bitmap bitmapImage, int imageWidth, int imageHeight, boolean cut, Callback successCallback, Callback errorCallback) {
         if (bitmapImage == null) {
             errorCallback.invoke("image not found");
             return;
@@ -344,8 +367,19 @@ public class NetPrinterAdapter implements PrinterAdapter {
             }
             printerOutputStream.write(SET_LINE_SPACE_32);
             printerOutputStream.write(LINE_FEED);
+            if (cut == true) {
+                printerOutputStream.write(LINE_FEED);
+                printerOutputStream.write(LINE_FEED);
+                printerOutputStream.write(LINE_FEED);
+                printerOutputStream.write(LINE_FEED);
+                printerOutputStream.write(LINE_FEED);
+                printerOutputStream.write(LINE_FEED);
+                printerOutputStream.write(LINE_FEED);
+                printerOutputStream.write(CMD_CUT);
+            }
 
             printerOutputStream.flush();
+            successCallback.invoke("Successful!");
         } catch (IOException e) {
             Log.e(LOG_TAG, "failed to print data");
             e.printStackTrace();
