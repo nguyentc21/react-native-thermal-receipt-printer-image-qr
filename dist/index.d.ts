@@ -57,7 +57,7 @@ declare const USBPrinter: {
      * @param Base64
      * @param opts
      */
-    printImageBase64: (Base64: string, opts?: PrinterImageOptions) => void;
+    printImageBase64: (Base64: string, opts?: PrinterImageOptions) => Promise<void>;
     /**
      * android print with encoder
      * @param text
@@ -124,7 +124,7 @@ declare const NetPrinter: {
      * @param Base64
      * @param opts
      */
-    printImageBase64: (Base64: string, opts?: PrinterImageOptions) => void;
+    printImageBase64: (Base64: string, opts?: PrinterImageOptions) => Promise<void>;
     /**
      * Android print with encoder
      * @param text
