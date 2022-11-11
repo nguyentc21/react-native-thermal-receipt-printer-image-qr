@@ -257,7 +257,15 @@ RCT_EXPORT_METHOD(printImageBase64:(NSString *)base64Qr
 
    CGFloat newHeight = image.size.height;
    if(nHeight != nil) {
-       newHeight = [nHeight floatValue];
+        int iNHeight = [nHeight intValue];
+        if (iNHeight == -1) {
+            CGFloat _iWidth = [nWidth floatValue];
+            CGFloat _width = image.size.width;
+            CGFloat ratio = (_iWidth / _width);
+            newHeight = ratio * image.size.height;
+        } else {
+            newHeight = [nHeight floatValue];
+        }
    }
 
    CGFloat paddingX = 250;
