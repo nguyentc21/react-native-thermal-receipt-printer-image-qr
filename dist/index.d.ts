@@ -17,7 +17,23 @@ export interface PrinterImageOptions {
     encoding?: string;
     imageWidth?: number;
     imageHeight?: number;
-    // printerWidthType?: PrinterWidth;
+    printerWidthType?: PrinterWidth;
+    paddingX?: number;
+}
+
+export interface PrinterImageBase64Options {
+    beep?: boolean;
+    cut?: boolean;
+    tailingLine?: boolean;
+    encoding?: string;
+    /** should be set = 576 for 80mm paper; = 384 for 56mm paper;
+    */
+    imageWidth: number;
+    /** Set imageHeight = -1 to auto scale image height. */
+    imageHeight?: number;
+    /** Only iOS (required)
+     * should be set = 576 for 80mm paper; = 384 for 56mm paper;
+    */
     printerWidth?: number;
     paddingX?: number;
 }
@@ -55,9 +71,9 @@ declare const USBPrinter: {
     /**
      * base 64 string
      * @param Base64
-     * @param opts
+     * @param opts: Should be set imageWidth, imageHeight(-1), printerWidth(only iOS) for the best result.
      */
-    printImageBase64: (Base64: string, opts?: PrinterImageOptions) => Promise<void>;
+    printImageBase64: (Base64: string, opts: PrinterImageBase64Options) => Promise<void>;
     /**
      * android print with encoder
      * @param text
@@ -89,9 +105,9 @@ declare const BLEPrinter: {
     /**
      * base 64 string
      * @param Base64
-     * @param opts
+     * @param opts: Should be set imageWidth, imageHeight(-1), printerWidth(only iOS) for the best result.
      */
-    printImageBase64: (Base64: string, opts?: PrinterImageOptions) => Promise<void>;
+    printImageBase64: (Base64: string, opts: PrinterImageBase64Options) => Promise<void>;
     /**
      * android print with encoder
      * @param text
@@ -122,9 +138,9 @@ declare const NetPrinter: {
     /**
      * base 64 string
      * @param Base64
-     * @param opts
+     * @param opts: Should be set imageWidth, imageHeight(-1), printerWidth(only iOS) for the best result.
      */
-    printImageBase64: (Base64: string, opts?: PrinterImageOptions) => Promise<void>;
+    printImageBase64: (Base64: string, opts: PrinterImageBase64Options) => Promise<void>;
     /**
      * Android print with encoder
      * @param text
