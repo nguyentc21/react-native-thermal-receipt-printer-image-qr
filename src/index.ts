@@ -33,6 +33,23 @@ export interface PrinterImageOptions {
   paddingX?: number,
 }
 
+export interface PrinterImageBase64Options {
+  beep?: boolean;
+  cut?: boolean;
+  tailingLine?: boolean;
+  encoding?: string;
+  /** should be set = 576 for 80mm paper; = 384 for 56mm paper;
+  */
+  imageWidth?: number;
+  /** Set imageHeight = -1 to auto scale image height. */
+  imageHeight?: number;
+  /** Only iOS (required)
+   * should be set = 576 for 80mm paper; = 384 for 56mm paper;
+  */
+  printerWidth?: number;
+  paddingX?: number;
+}
+
 export interface IUSBPrinter {
   device_name: string;
   vendor_id: string;
@@ -195,7 +212,7 @@ const USBPrinter = {
    * @param Base64
    * @param opts
    */
-  printImageBase64: function (Base64: string, opts: PrinterImageOptions = {}) {
+  printImageBase64: function (Base64: string, opts: PrinterImageBase64Options = {}) {
     if (Platform.OS === "ios") {
       return new Promise(function (resolve, reject) {
         return RNUSBPrinter.printImageBase64(
@@ -355,7 +372,7 @@ const BLEPrinter = {
    * @param Base64
    * @param opts
    */
-  printImageBase64: function (Base64: string, opts: PrinterImageOptions = {}) {
+  printImageBase64: function (Base64: string, opts: PrinterImageBase64Options = {}) {
     if (Platform.OS === "ios") {
       return new Promise(function (resolve, reject) {
         return RNBLEPrinter.printImageBase64(
@@ -531,7 +548,7 @@ const NetPrinter = {
    * @param Base64
    * @param opts
    */
-  printImageBase64: function (Base64: string, opts: PrinterImageOptions = {}) {
+  printImageBase64: function (Base64: string, opts: PrinterImageBase64Options = {}) {
     if (Platform.OS === "ios") {
       return new Promise(function (resolve, reject) {
         return RNNetPrinter.printImageBase64(
