@@ -267,7 +267,7 @@ RCT_EXPORT_METHOD(closeConn:(RCTResponseSenderBlock)successCallback
         [[PrinterSDK defaultPrinterSDK] disconnect];
         successCallback(@[@true]);
     } @catch (NSException *exception) {
-        NSLog(@"%@", exception.reason);
+        // NSLog(@"%@", exception.reason);
         errorCallback(@[exception.reason]);
     }
 }
@@ -278,6 +278,14 @@ RCT_EXPORT_METHOD(printTestPaper) {
 RCT_EXPORT_METHOD(selfTest) {
     [[PrinterSDK defaultPrinterSDK] selfTest];
 }
+RCT_EXPORT_METHOD(clear) {
+    [[PrinterSDK defaultPrinterSDK] stopScanPrinters];
+    _printerArray = nil;
+    m_printer = nil;
+    [[PrinterSDK defaultPrinterSDK] disconnect];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 
 @end
 

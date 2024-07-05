@@ -1,9 +1,9 @@
-import {NativeModules, NativeEventEmitter, Platform} from "react-native";
+import { NativeModules, NativeEventEmitter, Platform } from "react-native";
 
 import * as EPToolkit from "./utils/EPToolkit";
-import {processColumnText} from './utils/print-column';
-import {COMMANDS} from './utils/printer-commands';
-import {connectToHost} from './utils/net-connect';
+import { processColumnText } from './utils/print-column';
+import { COMMANDS } from './utils/printer-commands';
+import { connectToHost } from './utils/net-connect';
 
 const RNUSBPrinter = NativeModules.RNUSBPrinter;
 const RNBLEPrinter = NativeModules.RNBLEPrinter;
@@ -274,6 +274,10 @@ const BLEPrinter = {
       )
     ),
 
+  clear: () => {
+    RNBLEPrinter.clear();
+  },
+
   getDeviceList: (): Promise<IBLEPrinter[]> =>
     new Promise((resolve, reject) =>
       RNBLEPrinter.getDeviceList(
@@ -318,7 +322,7 @@ const BLEPrinter = {
       });
     }
   },
-  
+
   printBill: function (text: string, opts: PrinterOptions = {}) {
     if (Platform.OS === "ios") {
       return new Promise(function (resolve, reject) {
@@ -443,28 +447,37 @@ const NetPrinter = {
       )
     ),
 
-  getDeviceList: (): Promise<INetPrinter[]> =>
+  clear: () => {
+    RNNetPrinter.clear();
+  },
+
+  getDeviceList: (prefixPrinterIp: string): Promise<INetPrinter[]> =>
     new Promise((resolve, reject) =>
       RNNetPrinter.getDeviceList(
+        prefixPrinterIp,
         (printers: INetPrinter[]) => resolve(printers),
         (error: Error) => reject(error)
       )
     ),
 
+  stopGetDeviceList: (): void => {
+    RNNetPrinter.stopGetDeviceList();
+  },
+
   connectPrinter: (host: string, port: number, timeout?: number): Promise<INetPrinter> =>
     new Promise(async (resolve, reject) => {
-        try {
-          await connectToHost(host, timeout)
-          RNNetPrinter.connectPrinter(
-            host,
-            port,
-            (printer: INetPrinter) => resolve(printer),
-            (error: Error) => reject(error)
-          )
-        } catch (error) {
-          reject(error?.message || `Connect to ${host} fail`)
-        }
+      try {
+        await connectToHost(host, timeout)
+        RNNetPrinter.connectPrinter(
+          host,
+          port,
+          (printer: INetPrinter) => resolve(printer),
+          (error: Error) => reject(error)
+        )
+      } catch (error) {
+        reject(error?.message || `Connect to ${host} fail`)
       }
+    }
     ),
 
   closeConn: (): Promise<void> =>
@@ -494,7 +507,7 @@ const NetPrinter = {
       });
     }
   },
-  
+
   printBill: function (text: string, opts: PrinterOptions = {}) {
     if (Platform.OS === "ios") {
       return new Promise(function (resolve, reject) {
