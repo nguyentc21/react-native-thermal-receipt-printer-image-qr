@@ -20,7 +20,6 @@ export interface PrinterImageOptions {
     printerWidthType?: PrinterWidth;
     paddingX?: number;
 }
-
 export interface PrinterImageBase64Options {
     beep?: boolean;
     cut?: boolean;
@@ -28,7 +27,7 @@ export interface PrinterImageBase64Options {
     encoding?: string;
     /** should be set = 576 for 80mm paper; = 384 for 56mm paper;
     */
-    imageWidth: number;
+    imageWidth?: number;
     /** Set imageHeight = -1 to auto scale image height. */
     imageHeight?: number;
     /** Only iOS (required)
@@ -60,20 +59,20 @@ declare const USBPrinter: {
     getDeviceList: () => Promise<IUSBPrinter[]>;
     connectPrinter: (vendorId: string, productId: string) => Promise<IUSBPrinter>;
     closeConn: () => Promise<void>;
-    printText: (text: string, opts?: PrinterOptions) => void;
-    printBill: (text: string, opts?: PrinterOptions) => Promise<void>;
+    printText: (text: string, opts?: PrinterOptions) => Promise<unknown>;
+    printBill: (text: string, opts?: PrinterOptions) => Promise<unknown>;
     /**
      * image url
      * @param imgUrl
      * @param opts
      */
-    printImage: (imgUrl: string, opts?: PrinterImageOptions) => void;
+    printImage: (imgUrl: string, opts?: PrinterImageOptions) => Promise<unknown>;
     /**
      * base 64 string
      * @param Base64
-     * @param opts: Should be set imageWidth, imageHeight(-1), printerWidth(only iOS) for the best result.
+     * @param opts
      */
-    printImageBase64: (Base64: string, opts: PrinterImageBase64Options) => Promise<void>;
+    printImageBase64: (Base64: string, opts?: PrinterImageBase64Options) => Promise<unknown>;
     /**
      * android print with encoder
      * @param text
@@ -90,24 +89,24 @@ declare const USBPrinter: {
 };
 declare const BLEPrinter: {
     init: () => Promise<void>;
+    clear: () => void;
     getDeviceList: () => Promise<IBLEPrinter[]>;
-    stopScan: () => void;
     connectPrinter: (inner_mac_address: string) => Promise<IBLEPrinter>;
     closeConn: () => Promise<void>;
-    printText: (text: string, opts?: PrinterOptions) => void;
-    printBill: (text: string, opts?: PrinterOptions) => Promise<void>;
+    printText: (text: string, opts?: PrinterOptions) => Promise<unknown>;
+    printBill: (text: string, opts?: PrinterOptions) => Promise<unknown>;
     /**
      * image url
      * @param imgUrl
      * @param opts
      */
-    printImage: (imgUrl: string, opts?: PrinterImageOptions) => void;
+    printImage: (imgUrl: string, opts?: PrinterImageOptions) => Promise<unknown>;
     /**
      * base 64 string
      * @param Base64
-     * @param opts: Should be set imageWidth, imageHeight(-1), printerWidth(only iOS) for the best result.
+     * @param opts
      */
-    printImageBase64: (Base64: string, opts: PrinterImageBase64Options) => Promise<void>;
+    printImageBase64: (Base64: string, opts?: PrinterImageBase64Options) => Promise<unknown>;
     /**
      * android print with encoder
      * @param text
@@ -124,23 +123,25 @@ declare const BLEPrinter: {
 };
 declare const NetPrinter: {
     init: () => Promise<void>;
-    getDeviceList: () => Promise<INetPrinter[]>;
-    connectPrinter: (host: string, port: number, timeout?: number | undefined) => Promise<INetPrinter>;
+    clear: () => void;
+    getDeviceList: (prefixPrinterIp: string) => Promise<INetPrinter[]>;
+    stopGetDeviceList: () => void;
+    connectPrinter: (host: string, port: number, timeout?: number) => Promise<INetPrinter>;
     closeConn: () => Promise<void>;
-    printText: (text: string, opts?: {}) => void;
-    printBill: (text: string, opts?: PrinterOptions) => Promise<void>;
+    printText: (text: string, opts?: PrinterOptions) => Promise<unknown>;
+    printBill: (text: string, opts?: PrinterOptions) => Promise<unknown>;
     /**
      * image url
      * @param imgUrl
      * @param opts
      */
-    printImage: (imgUrl: string, opts?: PrinterImageOptions) => void;
+    printImage: (imgUrl: string, opts?: PrinterImageOptions) => Promise<unknown>;
     /**
      * base 64 string
      * @param Base64
-     * @param opts: Should be set imageWidth, imageHeight(-1), printerWidth(only iOS) for the best result.
+     * @param opts
      */
-    printImageBase64: (Base64: string, opts: PrinterImageBase64Options) => Promise<void>;
+    printImageBase64: (Base64: string, opts?: PrinterImageBase64Options) => Promise<unknown>;
     /**
      * Android print with encoder
      * @param text
