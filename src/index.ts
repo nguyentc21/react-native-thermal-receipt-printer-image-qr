@@ -630,9 +630,6 @@ const NetPrinter = {
   selfTest: (): void => {
     RNNetPrinter.selfTest();
   },
-  stopScan: (): void => {
-    RNNetPrinter.stopScan();
-  },
 };
 
 const NetPrinterEventEmitter = Platform.OS === 'ios' ? new NativeEventEmitter(RNNetPrinter) : new NativeEventEmitter();
