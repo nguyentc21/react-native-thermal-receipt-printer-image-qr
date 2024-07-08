@@ -342,6 +342,9 @@ var BLEPrinter = {
     selfTest: function () {
         RNBLEPrinter.selfTest();
     },
+    stopScan: function () {
+        RNBLEPrinter.stopScan();
+    },
 };
 var NetPrinter = {
     init: function () {
@@ -490,6 +493,9 @@ var NetPrinter = {
     },
     selfTest: function () {
         RNNetPrinter.selfTest();
+    },
+    stopScan: function () {
+        RNNetPrinter.stopScan();
     },
 };
 var NetPrinterEventEmitter = Platform.OS === 'ios' ? new NativeEventEmitter(RNNetPrinter) : new NativeEventEmitter();

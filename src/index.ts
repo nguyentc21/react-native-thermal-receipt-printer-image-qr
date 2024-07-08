@@ -438,6 +438,9 @@ const BLEPrinter = {
   selfTest: (): void => {
     RNBLEPrinter.selfTest();
   },
+  stopScan: (): void => {
+    RNBLEPrinter.stopScan();
+  },
 };
 
 const NetPrinter = {
@@ -453,7 +456,7 @@ const NetPrinter = {
     RNNetPrinter.clear();
   },
 
-  getDeviceList: (prefixPrinterIp: string): Promise<INetPrinter[]> =>
+  getDeviceList: (prefixPrinterIp?: string): Promise<INetPrinter[]> =>
     new Promise((resolve, reject) =>
       RNNetPrinter.getDeviceList(
         prefixPrinterIp,
@@ -626,6 +629,9 @@ const NetPrinter = {
   },
   selfTest: (): void => {
     RNNetPrinter.selfTest();
+  },
+  stopScan: (): void => {
+    RNNetPrinter.stopScan();
   },
 };
 

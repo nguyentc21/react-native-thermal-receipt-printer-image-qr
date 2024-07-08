@@ -120,11 +120,12 @@ declare const BLEPrinter: {
     printColumnsText: (texts: string[], columnWidth: number[], columnAliment: (ColumnAliment)[], columnStyle: string[], opts?: PrinterOptions) => void;
     printTestPaper: () => void;
     selfTest: () => void;
+    stopScan: () => void;
 };
 declare const NetPrinter: {
     init: () => Promise<void>;
     clear: () => void;
-    getDeviceList: (prefixPrinterIp: string) => Promise<INetPrinter[]>;
+    getDeviceList: (prefixPrinterIp?: string) => Promise<INetPrinter[]>;
     stopGetDeviceList: () => void;
     connectPrinter: (host: string, port: number, timeout?: number) => Promise<INetPrinter>;
     closeConn: () => Promise<string>;
@@ -155,6 +156,7 @@ declare const NetPrinter: {
     printColumnsText: (texts: string[], columnWidth: number[], columnAliment: (ColumnAliment)[], columnStyle?: string[], opts?: PrinterOptions) => void;
     printTestPaper: () => void;
     selfTest: () => void;
+    stopScan: () => void;
 };
 declare const NetPrinterEventEmitter: NativeEventEmitter;
 export { COMMANDS, NetPrinter, BLEPrinter, USBPrinter, NetPrinterEventEmitter };
