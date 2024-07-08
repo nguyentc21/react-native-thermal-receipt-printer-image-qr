@@ -296,10 +296,12 @@ const BLEPrinter = {
     ),
 
   closeConn: (): Promise<void> =>
-    new Promise((resolve) => {
-      RNBLEPrinter.closeConn();
-      resolve();
-    }),
+    new Promise((resolve, reject) =>
+      RNBLEPrinter.closeConn(
+        () => resolve(),
+        (error: Error) => reject(error)
+      )
+    ),
 
   printText: function (text: string, opts: PrinterOptions = {}) {
     if (Platform.OS === "ios") {
@@ -480,11 +482,13 @@ const NetPrinter = {
     }
     ),
 
-  closeConn: (): Promise<void> =>
-    new Promise((resolve) => {
-      RNNetPrinter.closeConn();
-      resolve();
-    }),
+  closeConn: (): Promise<string> =>
+    new Promise((resolve, reject) =>
+      RNNetPrinter.closeConn(
+        (connectedIp: string) => resolve(connectedIp),
+        (error: Error) => reject(error)
+      )
+    ),
 
   printText: function (text: string, opts: PrinterOptions = {}) {
     if (Platform.OS === "ios") {

@@ -234,9 +234,8 @@ var BLEPrinter = {
         });
     },
     closeConn: function () {
-        return new Promise(function (resolve) {
-            RNBLEPrinter.closeConn();
-            resolve();
+        return new Promise(function (resolve, reject) {
+            return RNBLEPrinter.closeConn(function () { return resolve(); }, function (error) { return reject(error); });
         });
     },
     printText: function (text, opts) {
@@ -383,9 +382,8 @@ var NetPrinter = {
         }); });
     },
     closeConn: function () {
-        return new Promise(function (resolve) {
-            RNNetPrinter.closeConn();
-            resolve();
+        return new Promise(function (resolve, reject) {
+            return RNNetPrinter.closeConn(function (connectedIp) { return resolve(connectedIp); }, function (error) { return reject(error); });
         });
     },
     printText: function (text, opts) {

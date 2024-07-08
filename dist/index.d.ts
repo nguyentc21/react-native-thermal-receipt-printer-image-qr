@@ -127,7 +127,7 @@ declare const NetPrinter: {
     getDeviceList: (prefixPrinterIp: string) => Promise<INetPrinter[]>;
     stopGetDeviceList: () => void;
     connectPrinter: (host: string, port: number, timeout?: number) => Promise<INetPrinter>;
-    closeConn: () => Promise<void>;
+    closeConn: () => Promise<string>;
     printText: (text: string, opts?: PrinterOptions) => Promise<unknown>;
     printBill: (text: string, opts?: PrinterOptions) => Promise<unknown>;
     /**
